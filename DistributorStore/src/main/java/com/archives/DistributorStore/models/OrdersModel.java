@@ -30,7 +30,7 @@ public class OrdersModel {
 
     @OneToOne
     @JoinColumn(name = "supplier_id")
-    private SupplierModel supplierModel;
+    private PresalesModel supplierModel;
 
     @ManyToMany(mappedBy = "ordersModels")
     private List<RutesOfDeliveryModel> rutesOfDeliveryModels;

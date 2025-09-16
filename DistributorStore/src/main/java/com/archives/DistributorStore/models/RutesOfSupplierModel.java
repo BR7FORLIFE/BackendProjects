@@ -18,7 +18,7 @@ public class RutesOfSupplierModel {
 
     @OneToOne
     @JoinTable(name = "supplier_id")
-    private SupplierModel supplierModel;
+    private PresalesModel supplierModel;
 
     @ManyToMany
     @JoinTable(name = "supplier_rutes_store", joinColumns = @JoinColumn(name = "supplier_rutes_id"), inverseJoinColumns = @JoinColumn(name = "store_id"))

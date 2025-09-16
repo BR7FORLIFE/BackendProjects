@@ -32,5 +32,5 @@ public class DistributorModel {
     private List<DeliveryModel> deliverModels;
 
     @OneToMany(mappedBy = "distributorModel", cascade = CascadeType.ALL)
-    private List<SupplierModel> supplierModels;
+    private List<PresalesModel> supplierModels;
 }

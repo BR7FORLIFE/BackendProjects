@@ -28,7 +28,7 @@ public class JwtServices {
 
     //esto es para el auth/register y enviar el jwt cuando el usuario se ha autenticado
     public String generateJwt(){
-
+        
 
         return "";
     }
@@ -45,5 +45,7 @@ public class JwtServices {
     public String extractUsername(String token) throws Exception{
         return extractAllClaims(token).getSubject();
     }
+
+
 
 }
