@@ -2,7 +2,10 @@ package com.archives.DistributorStore.security.middlewares;
 
 import java.io.IOException;
 
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -19,6 +22,7 @@ import lombok.RequiredArgsConstructor;
 public class JwtMiddleware extends OncePerRequestFilter {
 
     private final JwtServices jwtServices;
+    private final UserDetailsService userDetailsService;
 
     @Override
     @SuppressWarnings("null")
@@ -32,16 +36,28 @@ public class JwtMiddleware extends OncePerRequestFilter {
         }
 
         String tokenJwt = authorization.substring(7);
-        String username = null;
+        String storeNic = null;
 
         try {
-            username = jwtServices.extractUsername(tokenJwt);
+            storeNic = jwtServices.extractNicStore(tokenJwt);
         } catch (Exception e) {
             filterChain.doFilter(request, response);
         }
 
-        if(username == null || SecurityContextHolder.getContext().getAuthentication() == null){
-            
+        if (storeNic == null || SecurityContextHolder.getContext().getAuthentication() == null) {
+            UserDetails storeDetails = userDetailsService.loadUserByUsername(storeNic);
+
+            try {
+                if (jwtServices.isTokenExpired(tokenJwt)) {
+                    UsernamePasswordAuthenticationToken authStore = new UsernamePasswordAuthenticationToken(storeNic,
+                            null, storeDetails.getAuthorities());
+
+                    SecurityContextHolder.getContext().setAuthentication(authStore);
+
+                }
+            } catch (Exception e) {
+                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "invalid token - Request not authorize");
+            }
         }
     }
 }
