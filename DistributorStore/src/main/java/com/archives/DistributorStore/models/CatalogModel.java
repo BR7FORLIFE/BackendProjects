@@ -1,8 +1,10 @@
 package com.archives.DistributorStore.models;
 
+import java.util.List;
 import java.util.Set;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -22,6 +24,12 @@ public class CatalogModel {
     @JoinColumn(name = "distributor_id")
     private DistributorModel distributorModel;
 
-    @OneToMany(mappedBy = "catalogModel")
+    @OneToMany(mappedBy = "catalogModel", fetch = FetchType.LAZY)
     private Set<ProductModel> productModels;
+
+    @OneToMany(mappedBy = "catalogModel", fetch = FetchType.LAZY)
+    private List<PresalesModel> presalesModels;
+
+    @OneToMany(mappedBy = "catalogModel", fetch = FetchType.LAZY)
+    private List<OrdersModel> ordersModels;
 }

@@ -3,9 +3,13 @@ package com.archives.DistributorStore.models;
 import java.util.List;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import lombok.Data;
 
 @Data
@@ -13,17 +17,19 @@ import lombok.Data;
 public class StoreModel {
 
     @Id
-    private Integer nic;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
 
-    private String name;
-    private String direction;
-    private String city;
-    private Integer phone;
+    private Integer phone_number;
     private String email;
+    private String nic;
+    private String direction;
+    private String name;
 
-    @OneToOne(mappedBy = "storeModel")
-    private OrdersModel ordersModel;
+    @ManyToOne
+    @JoinColumn(name = "distributor_id")
+    private DistributorModel distributorModel;
 
-    @ManyToMany(mappedBy = "storeModels")
-    private List<RutesOfSupplierModel> rutesOfSupplierModels;
+    @OneToMany(mappedBy = "storeModel", fetch = FetchType.LAZY)
+    private List<BillModel> billModels;
 }
