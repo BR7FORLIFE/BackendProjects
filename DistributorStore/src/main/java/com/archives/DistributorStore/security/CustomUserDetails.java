@@ -1,30 +1,29 @@
 package com.archives.DistributorStore.security;
 
 import java.util.Collection;
-import java.util.List;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.archives.DistributorStore.interfaces.AppUser;
+
 public record CustomUserDetails(
-        String name,
-        String password,
-        List<GrantedAuthority> authorities
+    AppUser appUser
 
 ) implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return authorities;
+        return appUser.getAuthorities();
     }
 
     @Override
     public String getPassword() {
-        return password;
+        return appUser.getPassword();
     }
 
     @Override
     public String getUsername() {
-        return name;
+        return appUser.getUsername();
     }
 }
