@@ -1,9 +1,15 @@
 package com.archives.DistributorStore.models;
 
+import java.util.Collection;
 import java.util.List;
+
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import com.archives.DistributorStore.enums.DocumentType;
 import com.archives.DistributorStore.enums.LicenseType;
+import com.archives.DistributorStore.enums.Rols;
+import com.archives.DistributorStore.interfaces.AppUser;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -19,7 +25,7 @@ import lombok.Data;
 
 @Data
 @Entity
-public class DeliveryModel {
+public class DeliveryModel implements AppUser {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,6 +42,7 @@ public class DeliveryModel {
     private LicenseType licenseType;
 
     private Integer license_number;
+    private String password;
 
     @ManyToOne
     @JoinColumn(name = "distributor_id")
@@ -44,4 +51,19 @@ public class DeliveryModel {
     @ManyToMany
     @JoinTable(name = "deliverys_vehicles", joinColumns = @JoinColumn(name = "delivery_model_id"), inverseJoinColumns = @JoinColumn(name = "vehicle_id"))
     private List<VehicleModel> vehicleModels;
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(new SimpleGrantedAuthority(Rols.DELIVERY.asAuthority()));
+    }
+
+    @Override
+    public String getPassword() {
+        return this.password;
+    }
+
+    @Override
+    public String getUsername() {
+        return this.name;
+    }
 }

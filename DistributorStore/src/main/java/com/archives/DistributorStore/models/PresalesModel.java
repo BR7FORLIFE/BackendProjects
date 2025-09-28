@@ -1,6 +1,13 @@
 package com.archives.DistributorStore.models;
 
+import java.util.Collection;
 import java.util.List;
+
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+
+import com.archives.DistributorStore.enums.Rols;
+import com.archives.DistributorStore.interfaces.AppUser;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -16,7 +23,7 @@ import lombok.Data;
 
 @Data
 @Entity
-public class PresalesModel {
+public class PresalesModel implements AppUser{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,6 +33,7 @@ public class PresalesModel {
     private Integer document_number;
     private Integer phone;
     private String email;
+    private String password;
 
     @ManyToOne
     @JoinColumn(name = "distributor_id")
@@ -44,4 +52,19 @@ public class PresalesModel {
 
     @ManyToMany(mappedBy = "presalesModels", fetch = FetchType.LAZY)
     private List<RutesOfDeliveryModel> rutesOfDeliveryModels;
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+       return List.of(new SimpleGrantedAuthority(Rols.PRESALE.asAuthority()));
+    }
+
+    @Override
+    public String getPassword() {
+        return this.password;
+    }
+
+    @Override
+    public String getUsername() {
+        return this.name;
+    }
 }
