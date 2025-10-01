@@ -31,7 +31,7 @@ public class JwtMiddleware extends OncePerRequestFilter {
 
         String authorization = request.getHeader("Authorization");
 
-        if (authorization == null || !authorization.startsWith("bearer")) {
+        if (authorization == null || !authorization.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
         }
 
@@ -41,14 +41,14 @@ public class JwtMiddleware extends OncePerRequestFilter {
         try {
             storeNic = jwtServices.extractNicStore(tokenJwt);
         } catch (Exception e) {
-            filterChain.doFilter(request, response);
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid Bearer authentication");
         }
 
         if (storeNic == null || SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails storeDetails = userDetailsService.loadUserByUsername(storeNic);
 
             try {
-                if (jwtServices.isTokenExpired(tokenJwt)) {
+                if (!jwtServices.isTokenExpired(tokenJwt)) {
                     UsernamePasswordAuthenticationToken authStore = new UsernamePasswordAuthenticationToken(storeNic,
                             null, storeDetails.getAuthorities());
 

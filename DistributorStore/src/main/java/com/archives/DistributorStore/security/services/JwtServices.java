@@ -12,7 +12,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
-import com.archives.DistributorStore.models.StoreModel;
+import com.archives.DistributorStore.interfaces.AppUser;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtParser;
@@ -35,7 +35,7 @@ public class JwtServices {
 
     // esto es para el auth/register y enviar el jwt cuando el usuario se ha
     // autenticado
-    public String generateJwt(StoreModel storeModel) {
+    public String generateJwt(AppUser user) {
         Instant issueAtTime = Instant.now();
         Instant expirationTime = issueAtTime.plusSeconds(3600);
 
@@ -43,11 +43,10 @@ public class JwtServices {
         Date expiration = Date.from(expirationTime);
 
         Map<String, String> claims = new HashMap<>();
-        claims.put("name", storeModel.getName());
-        //claims.put("city", storeModel.getCity());
+        // claims.put("city", storeModel.getCity());
 
         return Jwts.builder()
-                .subject(String.valueOf(storeModel.getNic()))
+                .subject(user.getUsername())
                 .claims(claims)
                 .issuedAt(issueAt)
                 .expiration(expiration)
@@ -75,8 +74,9 @@ public class JwtServices {
     public boolean isValidToken(String token, UserDetails userDetails) throws Exception {
         try {
             String subjectJwtToken = extractAllClaims(token).getSubject();
-            //Integer subjectUserDetails = ((StoreModel) userDetails).getNic();
-            //return (String.valueOf(subjectUserDetails).equals(subjectJwtToken) && isTokenExpired(token));
+            // Integer subjectUserDetails = ((StoreModel) userDetails).getNic();
+            // return (String.valueOf(subjectUserDetails).equals(subjectJwtToken) &&
+            // isTokenExpired(token));
             return true;
 
         } catch (Exception e) {
