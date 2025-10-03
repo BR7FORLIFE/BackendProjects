@@ -1,6 +1,5 @@
 package com.archives.DistributorStore.models;
 
-import java.util.List;
 import java.util.Set;
 
 import org.hibernate.annotations.ManyToAny;
@@ -10,6 +9,8 @@ import com.archives.DistributorStore.enums.OrderDetails;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
@@ -23,6 +24,7 @@ import lombok.Data;
 public class OrdersModel {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private Double iva_percent;
     private Float total_price;
@@ -38,7 +40,7 @@ public class OrdersModel {
     @JoinColumn(name = "store_id")
     private StoreModel storeModel;
 
-    @ManyToAny
+    @ManyToOne
     @JoinColumn(name = "presales_id", referencedColumnName = "id")
     private PresalesModel presalesModel;
 
@@ -51,6 +53,6 @@ public class OrdersModel {
     private RutesOfDeliveryModel rutesOfDeliveryModels;
 
     @ManyToOne
-    @JoinColumn(name = "ordersModels")
+    @JoinColumn(name = "catalog_id")
     private CatalogModel catalogModel;
 }
