@@ -1,0 +1,61 @@
+version: "1.0"
+
+services:
+  kafka: 
+    container_name: kafka-container
+    image: apache/kafka:latest
+    environment:
+      # ID (identicador unico del broker) en desarrollo esta bien pero 
+      # producion es necesario que no se repita entre los nodos del cluster
+      KAFKA_NODE_ID: 1 
+
+      # Roles del broker
+      # define el comportamiento del broker en el cluster, hay roles predefinidos que son: 
+
+      # controller -> El servidor administra los metadatos del cluster, coordina liderazgo entre
+      #particiones y supervisa el estado del cluster
+
+      # broker -> El servidor (nodo del cluster o broker) se dedica exclusivamente a gestionar 
+      # las solicitudes de productores y consumidores y a almacenar los distintos mensajes
+
+      #broker,controller -> actua como los dos anteriores simultaneamente
+      KAFKA_PROCESS_ROLES: controller,broker
+      
+      # puertos internos donde escucha el cluster
+      
+      # PLAINTEXT -> listener para clientes normales (producers y customers), ademas que no hay cifrado
+      # ni autenticacion
+
+      #CONTROLLER -> es el listener interno que usa kafka para coordinar el cluster
+      KAFKA_LISTENERS: PLAINTEXT://:9092,CONTROLLER://:9093
+
+      #direccion que usan los clientes, kafka puede escuchar un puerto, pero este valor 
+      # le dicen que direccion usar para conectarse
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
+
+      # define cual de los listener definidos es responsable de las operaciones de controller
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+
+      # lista de brokers que participan en el quorum para la elección del controller en un cluster Kafka KRaft (sin Zookeeper)
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@localhost:9093
+
+      #ruta donde se guardara los archivos logs de cada particion
+      KAFKA_LOG_DIRS: /var/lib/kafka/data
+
+      # cuando creas un topic sin especificar el numero de particiones kafka usa este valor
+      KAFKA_NUM_PARTITIONS: 3
+
+      # numero de copias o replicaciones que kafka mantiene de cada particion para tolerancia a fallos
+      KAFKA_DEFAULT_REPLICATION_FACTOR: 1
+
+      # permite que kafka cree topic automaticamente cuando un cliente intenta producir uno que ya
+      # existe
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "false"
+
+    volumes:
+      - ./kafka-data:/var/lib/kafka/data
+    networks:
+      - websockets-network
+
+networks:
+  websockets-network:
