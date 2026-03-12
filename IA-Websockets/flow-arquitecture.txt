@@ -1,0 +1,47 @@
+WEBSOCKETS PROTOCOL
+
+Cliente JS
+   │
+   │ WebSocket
+   ▼
+Servidor WebFlux
+   │
+   │ mensaje
+   ▼
+Kafka (cola)
+   │
+   ▼
+Servicio de IA
+   │
+   ▼
+respuesta
+   │
+   ▼
+Kafka
+   │
+   ▼
+WebSocket server
+   │
+   ▼
+cliente
+
+
+KAFKA FLOW
++------------------+
+| WebSocket Server |
++------------------+
+      │        ▲
+      │        │
+      ▼        │
+chat-requests  │
+      │        │
+      ▼        │
+   +-----------+
+   |  Kafka    |
+   +-----------+
+      │
+      ▼
+   AI Service
+      │
+      ▼
+chat-responses
