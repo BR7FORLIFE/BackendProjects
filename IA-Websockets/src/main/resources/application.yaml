@@ -1,3 +1,13 @@
 spring:
   application:
     name: iawebsockets
+  
+  ai:
+    ollama:
+      base-url: http://localhost:11434
+      chat:
+        model: granite4:350m
+        options:
+          temperature: 0.6
+          num-predict: 512
+        
