@@ -22,7 +22,7 @@ public class ChatWebSocketsHandler implements WebSocketHandler {
     public Mono<Void> handle(WebSocketSession session) {
         return session.receive()
                 .map(WebSocketMessage::getPayloadAsText)
-                .flatMap(msg -> messagingUseCase.handleMessage(msg))
+                .flatMap(msg -> messagingUseCase.handleMessage(session.getId(), msg))
                 .then();
     }
 }
