@@ -38,3 +38,6 @@ out/
 
 ### enviroments variables ###
 .env
+
+### kafka
+kafka-data

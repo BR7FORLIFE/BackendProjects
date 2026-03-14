@@ -1,0 +1,11 @@
+directorio donde kafka guarda los archivos de configuracion 3
+
+/opt -> carpeta en linux para instalacion de paquetes de software
+
+/opt/kafka/bin/kafka-topics.sh \
+--create \
+--topic [TOPIC-NAME] \
+--bootstrap-server localhost:9092 \
+--partitions 3 \
+--replication-factor 1
+
