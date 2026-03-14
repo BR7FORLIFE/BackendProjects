@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.HandlerMapping;
 import org.springframework.web.reactive.handler.SimpleUrlHandlerMapping;
 import org.springframework.web.reactive.socket.WebSocketHandler;
+import org.springframework.web.reactive.socket.server.support.WebSocketHandlerAdapter;
 
 import com.archives.IAWebsockets.infra.websockets.handler.ChatWebSocketsHandler;
 
@@ -35,8 +36,14 @@ public class WebsocketsConfig { // clase de configuracion para mapear los endpoi
         // implementacion de HandlerMapping
         SimpleUrlHandlerMapping mapping = new SimpleUrlHandlerMapping();
         mapping.setUrlMap(mapperPaths); // definimos que url se mapeará
+        mapping.setOrder(-1); // prioridad para websockets
 
         return mapping;
+    }
+
+    @Bean
+    public WebSocketHandlerAdapter handlerAdapter() {
+        return new WebSocketHandlerAdapter();
     }
 
 }
