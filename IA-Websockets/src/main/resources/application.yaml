@@ -4,10 +4,12 @@ spring:
   
   ai:
     ollama:
-      base-url: http://localhost:11434
+      base-url: http://host.docker.internal:11434
       chat:
         model: granite4:350m
         options:
           temperature: 0.6
           num-predict: 512
-        
+  
+  kafka:
+    bootstrap-servers: kafka:9092 
