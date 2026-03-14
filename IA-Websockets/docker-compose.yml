@@ -31,13 +31,13 @@ services:
 
       #direccion que usan los clientes, kafka puede escuchar un puerto, pero este valor 
       # le dicen que direccion usar para conectarse
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
 
       # define cual de los listener definidos es responsable de las operaciones de controller
       KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
 
       # lista de brokers que participan en el quorum para la elección del controller en un cluster Kafka KRaft (sin Zookeeper)
-      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@localhost:9093
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka:9093
 
       #ruta donde se guardara los archivos logs de cada particion
       KAFKA_LOG_DIRS: /var/lib/kafka/data
@@ -52,10 +52,24 @@ services:
       # existe
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: "false"
 
+      # yo debo crear los topics cuando se levanta el servicio de kafka
+
     volumes:
       - ./kafka-data:/var/lib/kafka/data
     networks:
       - websockets-network
+    ports:
+      - "9092:9092"
+
+  backend:
+    container_name: backend-spring-ai
+    ports:
+      - "8080:8080"
+    build: .
+    networks: 
+      - websockets-network
+    depends_on: 
+      - kafka
 
 networks:
   websockets-network:
