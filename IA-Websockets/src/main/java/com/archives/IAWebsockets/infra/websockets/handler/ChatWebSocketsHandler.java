@@ -20,9 +20,18 @@ public class ChatWebSocketsHandler implements WebSocketHandler {
 
     @Override
     public Mono<Void> handle(WebSocketSession session) {
-        return session.receive()
+
+        // enviamos de cliente -> kafka
+        Mono<Void> input = session.receive()
                 .map(WebSocketMessage::getPayloadAsText)
                 .flatMap(msg -> messagingUseCase.handleMessage(session.getId(), msg))
                 .then();
+
+        // recibimos de kafka para enviar al cliente
+        Mono<Void> output = session.send(
+                messagingUseCase.handleResponse(session.getId())
+                        .map(response -> session.textMessage(response.getResponse())));
+
+        return Mono.when(input, output);
     }
 }
