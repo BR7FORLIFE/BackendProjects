@@ -1,17 +1,21 @@
 package com.archives.IAWebsockets.infra.kafka.config;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
+import org.apache.kafka.common.serialization.StringDeserializer;
+import org.apache.kafka.common.serialization.StringSerializer;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.kafka.support.serializer.JacksonJsonDeserializer;
+import org.springframework.kafka.support.serializer.JacksonJsonSerializer;
 
 import com.archives.IAWebsockets.domain.messaging.ChatMessageRequestEvent;
 import com.archives.IAWebsockets.domain.messaging.ChatMessageResponseEvent;
-import com.fasterxml.jackson.databind.JsonDeserializer;
-import com.fasterxml.jackson.databind.deser.std.StringDeserializer;
 
 import reactor.kafka.receiver.KafkaReceiver;
 import reactor.kafka.receiver.ReceiverOptions;
@@ -20,6 +24,9 @@ import reactor.kafka.sender.SenderOptions;
 
 @Configuration
 public class KafkaConfig {
+
+    @Value("${spring.kafka.bootstrap-servers}")
+    private String BOOTSTRAP_SERVERS_CONFIG;
 
     // Productor Reactivo (Configuracion)
     @Bean
@@ -36,14 +43,14 @@ public class KafkaConfig {
                  * 2. Ese broker retorna toda la lista de brokers
                  * 3. despues ya sabe a donde enviar cada mensaje
                  */
-                ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092",
+                ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, BOOTSTRAP_SERVERS_CONFIG,
 
                 // kafka solo trasmite bytes y lo hace mediante serializers es transformar la
                 // key a bytes
-                ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringDeserializer.class,
+                ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class,
 
                 // como el value es un objeto necesitamos serializarlo a bytes para kafka
-                ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
+                ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JacksonJsonSerializer.class);
 
         // configuracion real del productor de kafka con toda su configuracion global
         SenderOptions<String, ChatMessageRequestEvent> options = SenderOptions.create(configKafkaParamsProducer);
@@ -53,28 +60,26 @@ public class KafkaConfig {
 
     // Customer Reactivo (configuracion)
     @Bean
-    // es la clase principal de reactor kafka para consumir mensajes
     public KafkaReceiver<String, ChatMessageResponseEvent> kafkaReceiver() {
 
-        // definimos la configuracion del consumer de kafka
-        Map<String, Object> configKafkaParamsCustomer = Map.of(
-                ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092",
+        Map<String, Object> props = new HashMap<>();
 
-                // definimos el consumer group
-                /**
-                 * un consumer group nos permite procesar mensajes en paralelo
-                 * y distribuir la carga
-                 * 
-                 */
-                ConsumerConfig.GROUP_ID_CONFIG, "chat-group",
-                ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class,
-                ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
+        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, BOOTSTRAP_SERVERS_CONFIG);
+        props.put(ConsumerConfig.GROUP_ID_CONFIG, "chat-group");
+        props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
+        props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
 
-        // configuracion de kafka, topics a consumir, etc etc
+        JacksonJsonDeserializer<ChatMessageResponseEvent> deserializer = new JacksonJsonDeserializer<>(
+                ChatMessageResponseEvent.class);
+
+        deserializer.addTrustedPackages("com.archives.IAWebsockets.domain.messaging");
+
         ReceiverOptions<String, ChatMessageResponseEvent> options = ReceiverOptions
-                .<String, ChatMessageResponseEvent>create(configKafkaParamsCustomer)
-                .subscription(List.of("chat-responses")); // le dice a que topics debe subscribirse el customer
+                .<String, ChatMessageResponseEvent>create(props)
+                .withValueDeserializer(deserializer)
+                .subscription(List.of("chat-response"));
 
         return KafkaReceiver.create(options);
     }
+
 }
