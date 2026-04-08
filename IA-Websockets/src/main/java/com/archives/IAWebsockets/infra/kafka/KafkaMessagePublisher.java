@@ -27,7 +27,7 @@ public class KafkaMessagePublisher implements MessagePublisherPort {
          */
         SenderRecord<String, ChatMessageRequestEvent, String> record = SenderRecord.create(
                 new ProducerRecord<>(
-                        "chat-requests",
+                        "chat-request",
                         event.getSessionId(),
                         event),
                 event.getSessionId());

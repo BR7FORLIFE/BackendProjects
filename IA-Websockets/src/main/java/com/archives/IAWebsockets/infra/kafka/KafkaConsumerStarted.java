@@ -17,6 +17,14 @@ public class KafkaConsumerStarted {
 
     @PostConstruct
     public void start() {
-        iaChatUseCase.startedConsumed().subscribe();
+        iaChatUseCase.startedConsumed()
+                .doOnError(error -> {
+                    System.err.println("Error en kafka");
+                    error.printStackTrace();
+                })
+                .subscribe(
+                        data -> {
+                        },
+                        error -> System.err.println("Error de subscripcion" + error.getMessage()));
     }
 }
