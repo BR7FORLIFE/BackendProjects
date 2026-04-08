@@ -54,12 +54,23 @@ services:
 
       # yo debo crear los topics cuando se levanta el servicio de kafka
 
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT
+
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+
     volumes:
       - ./kafka-data:/var/lib/kafka/data
     networks:
       - websockets-network
     ports:
       - "9092:9092"
+    
+    healthcheck:
+      test: ["CMD", "bash", "-c", "nc -z localhost 9092"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
 
   backend:
     container_name: backend-spring-ai
@@ -69,7 +80,8 @@ services:
     networks: 
       - websockets-network
     depends_on: 
-      - kafka
+      kafka: 
+        condition: service_healthy
 
 networks:
   websockets-network:
