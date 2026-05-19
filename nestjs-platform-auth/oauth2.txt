@@ -1,0 +1,40 @@
+┌─────────────┐
+│   Usuario   │
+└──────┬──────┘
+       |
+       | click "Login with Google"
+       v
+┌─────────────┐
+│ Tu Backend  │
+└──────┬──────┘
+       |
+       | redirect OAuth
+       v
+┌─────────────┐
+│   Google    │
+└──────┬──────┘
+       |
+       | login + consentimiento
+       v
+┌─────────────┐
+│ Tu Callback │
+└──────┬──────┘
+       |
+       | exchange code
+       v
+┌─────────────┐
+│ Token API   │
+└──────┬──────┘
+       |
+       | access_token
+       | id_token
+       v
+┌─────────────┐
+│ Tu Backend  │
+└──────┬──────┘
+       |
+       | crear sesión
+       v
+┌─────────────┐
+│ Usuario Log │
+└─────────────┘
