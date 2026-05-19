@@ -8,9 +8,9 @@ import {
   Req,
   Res,
 } from '@nestjs/common';
-import type { AuthUseCase } from '../../application/usecases/auth.usecase';
+import type { AuthUseCase } from '../../application/usecases/auth.usecase.js';
 import type { Request, Response } from 'express';
-import type { registerUserDto } from '../../application/dtos/register-user.dto';
+import type { registerUserDto } from '../../application/dtos/register-user.dto.js';
 
 @Controller({
   path: 'auth',
@@ -24,7 +24,13 @@ export class AuthController {
 
   @Post('register')
   async register(@Body() register: registerUserDto) {
-    this.auth.register(register);
+    const { id, username } = await this.auth.register(register);
+
+    return {
+      id,
+      username,
+      message: 'user created succesfull!',
+    };
   }
 
   //contraoladores de oath2
@@ -44,10 +50,10 @@ export class AuthController {
   @Get('google/redirect')
   googleAuthRedirect(
     @Req() req: Request,
-    @Query('code') code,
-    @Query('state') state,
+    @Query('code') code: string,
+    @Query('state') state: string,
   ) {
-    const oldState = req.cookies?.oauth_state;
+    const oldState: string | undefined = req.cookies.oauth_state;
 
     if (!oldState) {
       throw new Error('missing state value!');
