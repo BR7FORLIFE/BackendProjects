@@ -4,7 +4,7 @@ spring:
   
   ai:
     ollama:
-      base-url: http://host.docker.internal:11434
+      base-url: http://ollama:11434
       chat:
         model: granite4:350m
         options:

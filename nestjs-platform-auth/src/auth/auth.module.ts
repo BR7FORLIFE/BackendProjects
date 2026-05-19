@@ -1,8 +1,10 @@
 import { Module } from '@nestjs/common';
 
-import { AuthUseCaseImp } from './application/orchestator/auth.service';
-import { AuthController } from './infra/controllers/auth.controller';
-import { AuthRepository } from './infra/repository/auth.repository';
+import { AuthUseCaseImp } from './application/orchestator/auth.service.js';
+import { AuthController } from './infra/controllers/auth.controller.js';
+import { AuthRepository } from './infra/repository/auth.repository.js';
+
+import { PrismaConfig } from '../config/db.config.js';
 
 @Module({
   controllers: [AuthController],
@@ -15,6 +17,7 @@ import { AuthRepository } from './infra/repository/auth.repository';
       provide: 'AUTH_REPOSITORY',
       useClass: AuthRepository,
     },
+    PrismaConfig,
   ],
 })
 export class AuthModule {}

@@ -20,6 +20,8 @@ public class KafkaMessageCustomer implements MessageCustomerPort {
     @Override
     public Flux<ChatMessageResponseEvent> receiveChatResponse() {
         return receiver.receive()
-                .map(record -> record.value());
+                .map(record -> record.value())
+                .doOnError(Throwable::printStackTrace)
+                .share();
     }
 }
