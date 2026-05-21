@@ -1,0 +1,31 @@
+services:
+  mongodb:
+    image: mongo:noble
+    container_name: auth-database
+    ports:
+      - 27017:27017
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD}
+      MONGO_INITDB_DATABASE: ${MONGO_DB_NAME}
+    volumes: 
+      - mongo-data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build: .
+    container_name: auth-microservice
+    ports:
+      - 8080:8080
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    env_file:
+      - .env
+
+volumes:
+  mongo-data:
