@@ -13,14 +13,18 @@ public final class UserModel {
     private final Instant createAt;
     private final Instant updateAt;
 
-    public UserModel createNew(UUID id, String email, String username, String password, Set<String> rols,
+    public static UserModel createNew(UUID id, String email, String username, String password, Set<String> rols,
             Instant createAt, Instant updateAt) {
         return new UserModel(id, email, username, password, rols, createAt, updateAt);
     }
 
-    public UserModel createDraft(String email, String username, String password, Set<String> rols) {
+    public static UserModel createDraft(String email, String username, String password) {
         return new UserModel(UUID.randomUUID(), email, username, password, Set.of("USER"), Instant.now(),
                 Instant.now());
+    }
+
+    public static UserModel createDetails(UUID id, String username) {
+        return new UserModel(id, null, username, null, null, null, null);
     }
 
     public UserModel(UUID id, String email, String username, String password, Set<String> rols, Instant createAt,
@@ -36,6 +40,10 @@ public final class UserModel {
 
     public UUID getId() {
         return id;
+    }
+
+    public String getEmail() {
+        return email;
     }
 
     public String getUsername() {

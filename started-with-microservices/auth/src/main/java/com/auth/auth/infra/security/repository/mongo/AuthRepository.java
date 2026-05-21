@@ -6,6 +6,12 @@ import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
 
 import com.auth.auth.infra.security.entity.AuthDocument;
 
-public interface AuthRepository extends ReactiveMongoRepository<AuthDocument, UUID> {
+import reactor.core.publisher.Mono;
 
+public interface AuthRepository extends ReactiveMongoRepository<AuthDocument, UUID> {
+    Mono<AuthDocument> findByEmail(String Email);
+
+    Mono<AuthDocument> findByUsername(String Username);
+
+    Mono<Boolean> existsByEmail(String Email);
 }
