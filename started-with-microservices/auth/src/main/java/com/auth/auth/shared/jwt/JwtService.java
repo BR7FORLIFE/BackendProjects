@@ -12,6 +12,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+import com.auth.auth.application.ports.JwtServicePort;
 import com.auth.auth.infra.security.manager.UserDetailsImp;
 import com.nimbusds.jose.JOSEObjectType;
 import com.nimbusds.jose.JWSAlgorithm;
@@ -26,7 +27,7 @@ import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
 @Service
-public class JwtService {
+public class JwtService implements JwtServicePort {
 
     private final RSAPublicKey publicKey;
     private final RSAPrivateKey privateKey;
@@ -39,6 +40,7 @@ public class JwtService {
         this.publicKey = (RSAPublicKey) keypair.getPublic();
     }
 
+    @Override
     public Mono<String> generateAccessToken(UserDetails userDetails) {
         Instant now = Instant.now();
         Instant expirationInstant = now.plusSeconds(this.expirationJwtSeconds);

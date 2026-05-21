@@ -3,10 +3,9 @@ package com.auth.auth.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.ReactiveAuthenticationManager;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.config.web.server.SecurityWebFiltersOrder;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
-import org.springframework.security.core.userdetails.ReactiveUserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.server.SecurityWebFilterChain;
@@ -14,10 +13,11 @@ import org.springframework.security.web.server.authentication.AuthenticationWebF
 import org.springframework.security.web.server.authentication.ServerAuthenticationConverter;
 import org.springframework.security.web.server.context.NoOpServerSecurityContextRepository;
 
+import com.auth.auth.infra.security.manager.ReactiveAuthenticationManagerImp;
 import com.auth.auth.shared.jwt.JwtService;
 
 @Configuration
-@EnableWebSecurity
+@EnableWebFluxSecurity
 public class SecurityConfig {
 
     private final String[] PUBLIC_PATHS = { "/auth/**" };
@@ -53,10 +53,8 @@ public class SecurityConfig {
     }
 
     @Bean
-    public ReactiveAuthenticationManager reactiveAuthenticationManager(
-            ReactiveUserDetailsService reactiveUserDetailsService,
-            PasswordEncoder passwordEncoder) {
-        return null;
+    public ReactiveAuthenticationManager reactiveAuthenticationManager() {
+        return new ReactiveAuthenticationManagerImp(this.jwtService);
     }
 
     @Bean

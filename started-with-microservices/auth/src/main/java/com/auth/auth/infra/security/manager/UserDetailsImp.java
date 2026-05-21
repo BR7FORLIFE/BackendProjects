@@ -14,10 +14,10 @@ public class UserDetailsImp implements UserDetails {
     private final String password;
     private final Collection<? extends GrantedAuthority> rols;
 
-    public UserDetailsImp(UserModel userModel, Collection<? extends GrantedAuthority> rols) {
+    public UserDetailsImp(UserModel userModel, String password, Collection<? extends GrantedAuthority> rols) {
         this.id = userModel.getId();
         this.username = userModel.getUsername();
-        this.password = userModel.getPassword();
+        this.password = password;
         this.rols = rols;
     }
 
