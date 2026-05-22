@@ -5,7 +5,9 @@ import java.security.KeyPairGenerator;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 
+@Profile("test")
 @Configuration
 public class RsaConfig {
 

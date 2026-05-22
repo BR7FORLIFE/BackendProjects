@@ -5,12 +5,15 @@ spring:
   webflux:
     base-path: /api
 
-  data:
-    mongodb:
-      uri: mongodb://${MONGO_USERNAME}:${MONGO_PASSWORD}@${HOST}:27017/${MONGO_DB_NAME}?authSource=admin
-      uuid-representation: standard
-
   autoconfigure:
     exclude:
       - org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
       - org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration
+  mongodb:
+    uri: mongodb://${MONGO_USERNAME}:${MONGO_PASSWORD}@${HOST}:27017/${MONGO_DB_NAME}?authSource=admin
+    representation:
+      uuid: standard
+
+jwt: 
+  public-key: ${JWT_PUBLIC_KEY}
+  private-key: ${JWT_PRIVATE_KEY}

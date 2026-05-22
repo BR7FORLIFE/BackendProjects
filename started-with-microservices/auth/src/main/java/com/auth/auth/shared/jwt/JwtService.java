@@ -8,6 +8,8 @@ import java.util.Date;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -29,16 +31,14 @@ import reactor.core.scheduler.Schedulers;
 @Service
 public class JwtService implements JwtServicePort {
 
-    private final RSAPublicKey publicKey;
-    private final RSAPrivateKey privateKey;
+    @Value("${jwt.public-key}")
+    private RSAPublicKey publicKey;
+
+    @Value("${jwt.private-key}")
+    private RSAPrivateKey privateKey;
 
     private final String issuer = "BR7FORLIFE";
     private Integer expirationJwtSeconds = 216000;
-
-    public JwtService(KeyPair keypair) {
-        this.privateKey = (RSAPrivateKey) keypair.getPrivate();
-        this.publicKey = (RSAPublicKey) keypair.getPublic();
-    }
 
     @Override
     public Mono<String> generateAccessToken(UserDetails userDetails) {
