@@ -1,0 +1,80 @@
+services: 
+  mongodb:
+    image: mongo:noble
+    container_name: auth-database
+    ports:
+      - 27017:27017
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD}
+      MONGO_INITDB_DATABASE: ${MONGO_DB_NAME}
+    volumes: 
+      - mongo-data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - auth-networks
+
+  postgres:
+    image: postgres:17
+    container_name: products-db
+    ports: 
+      - 5432:5432
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    networks:
+      - products-networks
+    volumes: 
+     - pg_data:/var/lib/postgresql/data
+
+  nginx-service:
+    image: nginx:trixie
+    container_name: nginx-reversed-proxy
+    ports: 
+      - 8080:8080
+    depends_on:
+      - auth-service
+      - product-service
+    volumes:
+      - ./gateway/nginx.conf:/etc/nginx/nginx.conf
+    networks:
+      - auth-networks
+      - products-networks
+
+  auth-service: 
+    build: ./auth
+    container_name: auth-service
+    ports: 
+      - 3001:3001
+    networks:
+      - auth-networks
+    env_file:
+      - ./auth/.env
+    depends_on:
+      - mongodb
+    
+  product-service:
+    build: ./products-service
+    container_name: products-service
+    ports: 
+      - 3000:3000
+    networks:
+      - products-networks
+    env_file:
+      - ./products-service/.env
+    depends_on:
+      - postgres
+
+
+networks: 
+  auth-networks:
+  products-networks:
+
+volumes:
+  pg_data:
+  mongo-data:
