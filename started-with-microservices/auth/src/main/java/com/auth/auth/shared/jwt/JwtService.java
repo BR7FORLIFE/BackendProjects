@@ -1,6 +1,5 @@
 package com.auth.auth.shared.jwt;
 
-import java.security.KeyPair;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import java.time.Instant;
@@ -9,7 +8,6 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Profile;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -31,14 +29,17 @@ import reactor.core.scheduler.Schedulers;
 @Service
 public class JwtService implements JwtServicePort {
 
-    @Value("${jwt.public-key}")
-    private RSAPublicKey publicKey;
+    private final RSAPublicKey publicKey;
 
-    @Value("${jwt.private-key}")
-    private RSAPrivateKey privateKey;
+    private final RSAPrivateKey privateKey;
 
     private final String issuer = "BR7FORLIFE";
     private Integer expirationJwtSeconds = 216000;
+
+    public JwtService(RSAPublicKey rsaPublicKey, RSAPrivateKey rsaPrivateKey) {
+        this.privateKey = rsaPrivateKey;
+        this.publicKey = rsaPublicKey;
+    }
 
     @Override
     public Mono<String> generateAccessToken(UserDetails userDetails) {

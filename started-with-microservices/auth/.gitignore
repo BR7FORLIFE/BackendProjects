@@ -39,3 +39,5 @@ out/
 ##enviroments
 .env
 .env.local
+public.pem
+private.pem
