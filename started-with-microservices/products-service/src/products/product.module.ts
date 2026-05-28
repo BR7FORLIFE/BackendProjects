@@ -1,10 +1,11 @@
 import { Module } from '@nestjs/common';
-import { ProductsController } from './infra/controllers/product.controller';
-import { ProductUseCaseImp } from './application/orchestator/product-orchestator';
-import { ProductRepository } from './infra/repository/product.repository';
+import { ProductsController } from './infra/controllers/product.controller.js';
+import { ProductUseCaseImp } from './application/orchestator/product-orchestator.js';
+import { ProductRepository } from './infra/repository/product.repository.js';
+import { PrismaClientConfig } from '../config/prisma-client.js';
 
 @Module({
   controllers: [ProductsController],
-  providers: [ProductUseCaseImp, ProductRepository],
+  providers: [ProductUseCaseImp, ProductRepository, PrismaClientConfig],
 })
 export class ProductModule {}

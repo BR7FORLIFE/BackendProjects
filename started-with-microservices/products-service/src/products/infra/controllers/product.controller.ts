@@ -1,9 +1,19 @@
-import { Body, Controller, Post, Req, UseGuards } from '@nestjs/common';
-import type { Request } from 'express';
-import { JwtAuthGuard } from '../../../auth/guards/auth.guard';
-import type { GenerateProductRequest } from '../../application/dto/generate-product-request.dto';
-import type { ProductUseCaseImp } from '../../application/orchestator/product-orchestator';
+import {
+  Body,
+  Controller,
+  Post,
+  Req,
+  UseFilters,
+  UseGuards,
+} from '@nestjs/common';
+import { JwtAuthGuard } from '../../../auth/guards/auth.guard.js';
+import { GenerateProductRequest } from '../../application/dto/generate-product-request.dto.js';
+import { ProductUseCaseImp } from '../../application/orchestator/product-orchestator.js';
+import { AuthExceptionFilter } from '../../../auth/filters/auth-exception-filter.js';
+import { UserNotFound } from '../../../auth/exceptions/user-not-found.js';
+import type { AuthRequest } from '../../../auth/context/auth-request.js';
 
+@UseFilters(AuthExceptionFilter)
 @UseGuards(JwtAuthGuard)
 @Controller({
   version: '1',
@@ -14,20 +24,22 @@ export class ProductsController {
 
   @Post()
   async generateProduct(
-    @Req() req: Request,
+    @Req() req: AuthRequest,
     @Body() generateProductDto: GenerateProductRequest,
   ) {
-    const userId = req.user?.userId;
+    const userId = req.user.userId;
 
     if (!userId) {
-      throw new Error('');
+      throw new UserNotFound();
     }
 
-    await this.productUseCase.generateProduct({
+    const saved = await this.productUseCase.generateProduct({
       userId,
       name: generateProductDto.name,
       quantity: generateProductDto.quantity,
       sku: generateProductDto.sku,
     });
+
+    return saved;
   }
 }

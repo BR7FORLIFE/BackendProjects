@@ -1,16 +1,19 @@
 import { Injectable } from '@nestjs/common';
-import type { ProductRepository } from '../../infra/repository/product.repository';
-
-interface Product {
-  userId: string;
-  sku: string;
-  name: string;
-  quantity: number;
-}
+import { ProductRepository } from '../../infra/repository/product.repository.js';
+import type { Product } from '../../../common/types/product.type.js';
 
 @Injectable()
 export class ProductUseCaseImp {
   constructor(private productRepository: ProductRepository) {}
 
-  async generateProduct(product: Product) {}
+  async generateProduct(
+    product: Product,
+  ): Promise<{ userId: string; sku: string }> {
+    const { userId, sku } = await this.productRepository.save(product);
+
+    return {
+      userId,
+      sku,
+    };
+  }
 }

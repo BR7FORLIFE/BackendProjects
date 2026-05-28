@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
-import { JwtStrategyService } from './strategy/JwtStrategy.service';
-import { PUBLIC_KEY_JWT } from '../../constants';
+import { JwtStrategyService } from './strategy/JwtStrategy.service.js';
+import { PUBLIC_KEY_JWT } from '../../constants.js';
 
 @Module({
   imports: [
