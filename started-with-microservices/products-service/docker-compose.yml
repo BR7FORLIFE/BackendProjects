@@ -14,7 +14,12 @@ services:
       - .env
     volumes: 
      - pg_data:/var/lib/postgresql/data
-     
+    
+  product-service:
+    build: ./Dockerfile
+    networks:
+      - products-networks
+
 volumes:
   pg_data:
 
