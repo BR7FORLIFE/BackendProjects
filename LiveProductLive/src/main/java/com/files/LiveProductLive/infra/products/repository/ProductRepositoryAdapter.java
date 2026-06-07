@@ -8,6 +8,7 @@ import com.files.LiveProductLive.infra.products.entity.ProductEntity;
 import com.files.LiveProductLive.infra.products.mapper.ProductMapper;
 import com.files.LiveProductLive.infra.products.repository.postgres.ProductRepository;
 
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Repository
@@ -23,5 +24,10 @@ public class ProductRepositoryAdapter implements PostgresRepositoryPort {
     public Mono<ProductModel> save(ProductModel productModel) {
         ProductEntity entity = ProductMapper.toEntity(productModel);
         return productRepository.save(entity).map(ProductMapper::toDomain);
+    }
+
+    @Override
+    public Flux<ProductModel> findAll() {
+        return productRepository.findAll().map(ProductMapper::toDomain);
     }
 }

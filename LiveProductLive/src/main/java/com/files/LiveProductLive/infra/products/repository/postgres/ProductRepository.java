@@ -6,6 +6,8 @@ import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 
 import com.files.LiveProductLive.infra.products.entity.ProductEntity;
 
-public interface ProductRepository extends ReactiveCrudRepository<ProductEntity, UUID> {
+import reactor.core.publisher.Flux;
 
+public interface ProductRepository extends ReactiveCrudRepository<ProductEntity, UUID> {
+    Flux<ProductEntity> findAll();
 }
