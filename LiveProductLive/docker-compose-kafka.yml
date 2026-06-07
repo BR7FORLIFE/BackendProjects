@@ -1,0 +1,37 @@
+#cada servicio de kafka en un broker independiente o un proceso en el sistema
+
+services:
+  kafka: 
+    image: apache/kafka:4.2.1
+    container_name: kafka-test
+    ports: 
+      - 9092:9092
+    environment:
+      # que broker soy? como me identifico, en este caso es 1, para cada broker necesitaria una id unica
+      KAFKA_NODE_ID: 1 
+
+      # roles en un broker kafka: existen 2 [(broker (guardar mensajees)), (controller (administra el cluster))]
+      # role Controller permite administrar topics, particiones, lideres, metadatos
+      KAFKA_PROCESS_ROLES: broker, controller
+
+      # se basan en el protocolo kafka protocol (TCP) que es un canal que abra para la comunicacion
+      # literalmente es: "Abre un socket TCP en esta dirección y acepta conexiones usando este tipo de listener" 
+
+      #PLAINTEXT -> es el tipo de seguridad el protocolo kafka (tcp) lo que le dice que es sin cifrado (texto plano)
+      # CONTROLLER -> trafico interno de control donde pasan los mensajes internos de kraft para sincronizar topics, particiones etc
+
+      # a tener en cuenta como en este caso el broker tiene dos roles broker y controller entonces necesita dos los listeners esto permite abrir dos sockets distintos para cada listener
+      KAFKA_LISTENERS: PLAINTEXT://:9092, CONTROLLER://:9093
+
+      # ¿donde me puedes encontrar? -> le sirve a spring o localmente poder conectarse !tener ciudado pq puede haber errores o bug raros
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
+
+      # le dice "de todos los listeners definidos ¿cual debe usar el rol controller para comunicarse con otros controlers?"
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+
+      # define quienes son los controllers, -> sintaxis nodeId@host:<port> 
+      # como estamos en docker kafka es el host ya que es el nombre del servicio
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka:9093
+
+      
+      
