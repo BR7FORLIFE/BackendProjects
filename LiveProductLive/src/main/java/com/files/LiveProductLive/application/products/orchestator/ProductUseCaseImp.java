@@ -1,5 +1,6 @@
 package com.files.LiveProductLive.application.products.orchestator;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
@@ -40,4 +41,8 @@ public class ProductUseCaseImp implements ProductUseCase {
         return redisRepositoryPort.incrementViewsById(id);
     }
 
+    @Override
+    public Mono<List<ProductModel>> getAll() {
+        return postgresRepositoryPort.findAll().collectList();
+    }
 }
