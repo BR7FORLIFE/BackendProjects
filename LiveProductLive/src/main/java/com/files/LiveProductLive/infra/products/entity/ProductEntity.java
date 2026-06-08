@@ -26,6 +26,7 @@ public class ProductEntity implements Persistable<UUID> {
 
     private String name;
     private Float price;
+    private String url;
 
     @Override
     public UUID getId() {
@@ -41,4 +42,4 @@ public class ProductEntity implements Persistable<UUID> {
         this.isNew = false;
     }
 
-}
+}   

@@ -5,7 +5,7 @@ import com.files.LiveProductLive.infra.products.entity.ProductEntity;
 
 public class ProductMapper {
     public static ProductModel toDomain(ProductEntity entity) {
-        return ProductModel.createNew(entity.getId(), entity.getName(), entity.getPrice());
+        return ProductModel.createNew(entity.getId(), entity.getName(), entity.getPrice(), entity.getUrl());
     }
 
     public static ProductEntity toEntity(ProductModel model) {
@@ -14,6 +14,7 @@ public class ProductMapper {
         entity.setId(model.getId());
         entity.setName(model.getName());
         entity.setPrice(model.getPrice());
+        entity.setUrl(model.getUrl());
 
         return entity;
     }
