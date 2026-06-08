@@ -28,7 +28,7 @@ public class ProductController {
 
     @PostMapping
     public Mono<ResponseEntity<String>> createProduct(@RequestBody CreateProductRequestDto dto) {
-        return productUseCase.createProduct(dto.name(), dto.price())
+        return productUseCase.createProduct(dto.name(), dto.price(), dto.url())
                 .map(result -> ResponseEntity.ok().body(result));
     }
 
