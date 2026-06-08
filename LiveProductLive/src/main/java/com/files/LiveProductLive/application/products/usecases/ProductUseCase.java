@@ -8,7 +8,7 @@ import com.files.LiveProductLive.domain.products.ProductModel;
 import reactor.core.publisher.Mono;
 
 public interface ProductUseCase {
-    Mono<String> createProduct(String name, Float price);
+    Mono<String> createProduct(String name, Float price, String url);
 
     Mono<Void> establishViewByProductId(UUID id);
 

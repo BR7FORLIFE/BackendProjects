@@ -24,9 +24,9 @@ public class ProductUseCaseImp implements ProductUseCase {
     }
 
     @Override
-    public Mono<String> createProduct(String name, Float price) {
+    public Mono<String> createProduct(String name, Float price, String url) {
         // creamos el producto tanto postgres como en redis
-        ProductModel newProduct = ProductModel.createDraft(name, price);
+        ProductModel newProduct = ProductModel.createDraft(name, price, url);
 
         // postgres -> para obtener los productos
         // redis para poder aumentar inicializar los contadores de vistas
