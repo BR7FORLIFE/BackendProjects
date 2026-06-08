@@ -33,5 +33,6 @@ services:
       # como estamos en docker kafka es el host ya que es el nombre del servicio
       KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka:9093
 
-      
+      # el factor de replicacion de un topic, le asignamos uno para solamente cree una particion
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       
