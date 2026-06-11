@@ -2,6 +2,7 @@ package com.files.LiveProductLive.infra.products.controller;
 
 import java.util.UUID;
 
+import org.apache.kafka.clients.producer.KafkaProducer;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.files.LiveProductLive.application.products.dtos.CreateProductRequestDto;
 import com.files.LiveProductLive.application.products.dtos.GetAllProductsResponseDto;
 import com.files.LiveProductLive.application.products.usecases.ProductUseCase;
+import com.files.LiveProductLive.application.viewProducts.usecases.ProductViewUseCase;
 
 import reactor.core.publisher.Mono;
 
@@ -20,10 +22,12 @@ import reactor.core.publisher.Mono;
 @RequestMapping("/products")
 public class ProductController {
 
-    private ProductUseCase productUseCase;
+    private final ProductUseCase productUseCase;
+    private final ProductViewUseCase productViewUseCase;
 
-    public ProductController(ProductUseCase productUseCase) {
+    public ProductController(ProductUseCase productUseCase, ProductViewUseCase productViewUseCase) {
         this.productUseCase = productUseCase;
+        this.productViewUseCase = productViewUseCase;
     }
 
     @PostMapping
@@ -34,8 +38,8 @@ public class ProductController {
 
     @GetMapping("/{id}")
     public Mono<ResponseEntity<Void>> viewProduct(@PathVariable UUID id) {
-        return productUseCase.establishViewByProductId(id)
-                .thenReturn(ResponseEntity.ok().build());
+        productViewUseCase.setViewInProduct(id);
+        return Mono.just(ResponseEntity.ok().build());
     }
 
     @GetMapping
