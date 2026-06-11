@@ -11,6 +11,7 @@ import org.springframework.context.annotation.Configuration;
 
 import com.files.LiveProductLive.infra.kafka.records.KafkaProperties;
 
+import reactor.kafka.receiver.KafkaReceiver;
 import reactor.kafka.receiver.ReceiverOptions;
 
 @Configuration
@@ -41,5 +42,10 @@ public class KafkaConsumerConfig {
 
         // nos subcribimos al topic como consumidores
         return options.subscription(List.of(properties.productViewTopic()));
+    }
+
+    @Bean
+    public KafkaReceiver<String, String> kafkaReceiver(ReceiverOptions<String, String> options) {
+        return KafkaReceiver.create(options);
     }
 }

@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Configuration;
 
 import com.files.LiveProductLive.infra.kafka.records.KafkaProperties;
 
+import reactor.kafka.sender.KafkaSender;
 import reactor.kafka.sender.SenderOptions;
 
 @Configuration
@@ -33,4 +34,10 @@ public class KafkaProducerConfig {
 
         return SenderOptions.create(config);
     }
+
+    @Bean
+    public KafkaSender<String, String> kafkaSender(SenderOptions<String, String> options) {
+        return KafkaSender.create(options);
+    }
+
 }
