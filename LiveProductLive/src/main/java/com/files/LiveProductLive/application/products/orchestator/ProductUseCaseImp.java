@@ -1,7 +1,6 @@
 package com.files.LiveProductLive.application.products.orchestator;
 
 import java.util.List;
-import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
@@ -33,12 +32,6 @@ public class ProductUseCaseImp implements ProductUseCase {
         return Mono.when(
                 postgresRepositoryPort.save(newProduct),
                 redisRepositoryPort.save(newProduct)).thenReturn("product saved!");
-    }
-
-    @Override
-    public Mono<Void> establishViewByProductId(UUID id) {
-        // aumentamos en el contador de views del producto correspondiente a la id
-        return redisRepositoryPort.incrementViewsById(id);
     }
 
     @Override
