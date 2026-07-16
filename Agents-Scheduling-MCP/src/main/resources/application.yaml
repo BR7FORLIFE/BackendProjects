@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: Agents-Scheduling-MCP
+
+  ai:
+    ollama: 
+      init:
+        pull-model-strategy: when-missing
+      base-url: http://localhost:11434
+      chat:   
+        model: granite3-dense:2b
