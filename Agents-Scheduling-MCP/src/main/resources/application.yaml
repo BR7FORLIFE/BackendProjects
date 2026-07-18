@@ -2,6 +2,16 @@ spring:
   application:
     name: Agents-Scheduling-MCP
 
+  datasource:
+    url: jdbc:postgresql://localhost:5432/memory
+    username: br7forlife
+    password: 12345
+    driver-class-name: org.postgresql.Driver
+  
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+
   ai:
     ollama: 
       init:
@@ -9,3 +19,4 @@ spring:
       base-url: http://localhost:11434
       chat:   
         model: granite3-dense:2b
+
