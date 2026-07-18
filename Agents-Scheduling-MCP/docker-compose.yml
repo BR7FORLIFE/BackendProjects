@@ -1,0 +1,15 @@
+services: 
+  agent-memory: 
+    image: postgres:17
+    container_name: agent-memory
+    ports: 
+      - 5432:5432
+    environment:
+      POSTGRES_USER: br7forlife
+      POSTGRES_PASSWORD: 12345
+      POSTGRES_DB: memory
+    volumes: 
+      - postgres_data:/var/lib/postgresql/data  
+
+volumes: 
+  postgres_data: 
