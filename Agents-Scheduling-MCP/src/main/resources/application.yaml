@@ -16,7 +16,12 @@ spring:
     ollama: 
       init:
         pull-model-strategy: when-missing
+        
       base-url: http://localhost:11434
       chat:   
-        model: granite3-dense:2b
+        model: qwen2.5:3b
+        num-thread: 5
+        num-ctx: 1024
+        num-keep: 0
+        
 

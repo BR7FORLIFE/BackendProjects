@@ -15,7 +15,7 @@ public class ContentMemoryModel {
     }
 
     public static ContentMemoryModel createDratf(String content) {
-        return new ContentMemoryModel(UUID.randomUUID(), content, Instant.now());
+        return new ContentMemoryModel(null, content, Instant.now());
     }
 
     public static ContentMemoryModel createNew(UUID id, String content, Instant createAt) {
